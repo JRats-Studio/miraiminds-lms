@@ -9,8 +9,9 @@ import LoadingSkeleton from '@/components/LoadingSkeleton'
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
 async function fetchGrade(id: string) {
+  const cookieStore = await cookies()
   const res = await fetch(`${serverUrl}/api/grades/${id}`, {
-    headers: { cookie: cookies().toString() },
+    headers: { cookie: cookieStore.toString() },
     cache: 'no-store',
   })
 
@@ -31,8 +32,9 @@ async function fetchSubjects(gradeId: string) {
     })
   )
 
+  const cookieStore = await cookies()
   const res = await fetch(`${serverUrl}/api/subjects?${params.toString()}`, {
-    headers: { cookie: cookies().toString() },
+    headers: { cookie: cookieStore.toString() },
     cache: 'no-store',
   })
 

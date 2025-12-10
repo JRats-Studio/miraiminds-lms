@@ -103,12 +103,12 @@ export function ModuleForm({ initialData }: ModuleFormProps) {
 
   const onSubmit = async (values: ModuleFormValues) => {
     try {
-      // Convert subject ID to number for Payload relationship
+      // Convert IDs to numbers for Payload relationships
       const data = {
         name: values.name,
         subject: parseInt(values.subject, 10),
         videoUrl: values.videoUrl || undefined,
-        allowedUsers: values.allowedUsers,
+        allowedUsers: values.allowedUsers?.map((id) => parseInt(id, 10)).filter((id) => !isNaN(id)),
         description: values.description || undefined,
         displayOrder: values.displayOrder,
       }

@@ -13,8 +13,9 @@ interface SubjectWithGrade extends Subject {
 }
 
 async function fetchSubject(id: string) {
+  const cookieStore = await cookies()
   const res = await fetch(`${serverUrl}/api/subjects/${id}?depth=1`, {
-    headers: { cookie: cookies().toString() },
+    headers: { cookie: cookieStore.toString() },
     cache: 'no-store',
   })
 
@@ -36,8 +37,9 @@ async function fetchModules(subjectId: string) {
     })
   )
 
+  const cookieStore = await cookies()
   const res = await fetch(`${serverUrl}/api/modules?${params.toString()}`, {
-    headers: { cookie: cookies().toString() },
+    headers: { cookie: cookieStore.toString() },
     cache: 'no-store',
   })
 

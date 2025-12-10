@@ -14,8 +14,9 @@ interface LessonWithModule extends Lesson {
 }
 
 async function fetchLesson(id: string) {
+  const cookieStore = await cookies()
   const res = await fetch(`${serverUrl}/api/lessons/${id}?depth=2`, {
-    headers: { cookie: cookies().toString() },
+    headers: { cookie: cookieStore.toString() },
     cache: 'no-store',
   })
 
@@ -37,8 +38,9 @@ async function fetchLessonsForModule(moduleId: string) {
     })
   )
 
+  const cookieStore = await cookies()
   const res = await fetch(`${serverUrl}/api/lessons?${params.toString()}`, {
-    headers: { cookie: cookies().toString() },
+    headers: { cookie: cookieStore.toString() },
     cache: 'no-store',
   })
 

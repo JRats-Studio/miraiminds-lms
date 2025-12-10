@@ -43,7 +43,7 @@ export default async function Navbar() {
               <span className="text-primary-foreground font-bold text-xl" style={{ fontFamily: 'var(--font-header)' }}>M</span>
             </div>
             <span className="text-2xl font-bold text-primary" style={{ fontFamily: 'var(--font-header)' }}>
-              Mirai Minds
+              Mirai Minds LMS
             </span>
           </Link>
 

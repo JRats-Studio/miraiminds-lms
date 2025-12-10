@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
@@ -36,7 +36,12 @@ const subjectSchema = z.object({
   displayOrder: z.coerce.number().int().min(0, 'Order must be a positive number'),
 })
 
-type SubjectFormValues = z.infer<typeof subjectSchema>
+type SubjectFormValues = {
+  name: string
+  grade: string
+  description?: string
+  displayOrder: number
+}
 
 interface SubjectFormProps {
   initialData?: Subject
@@ -59,7 +64,7 @@ export function SubjectForm({ initialData }: SubjectFormProps) {
   }
 
   const form = useForm<SubjectFormValues>({
-    resolver: zodResolver(subjectSchema),
+    resolver: zodResolver(subjectSchema) as Resolver<SubjectFormValues>,
     defaultValues: {
       name: initialData?.name || '',
       grade: getGradeId(),
@@ -76,13 +81,11 @@ export function SubjectForm({ initialData }: SubjectFormProps) {
         grade: parseInt(values.grade, 10),
       }
 
-      console.log('Submitting subject:', data)
-
       if (isEditing) {
-        await updateDocument<Subject>('subjects', initialData.id, data)
+        await updateDocument<Subject>('subjects', initialData.id, data as unknown as Partial<Subject>)
         toast.success('Subject updated successfully')
       } else {
-        await createDocument<Subject>('subjects', data)
+        await createDocument<Subject>('subjects', data as unknown as Partial<Subject>)
         toast.success('Subject created successfully')
       }
       router.push('/dashboard/admin/subjects')

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
@@ -27,7 +27,11 @@ const gradeSchema = z.object({
   displayOrder: z.coerce.number().int().min(0, 'Order must be a positive number'),
 })
 
-type GradeFormValues = z.infer<typeof gradeSchema>
+type GradeFormValues = {
+  name: string
+  description?: string
+  displayOrder: number
+}
 
 interface GradeFormProps {
   initialData?: Grade
@@ -38,7 +42,7 @@ export function GradeForm({ initialData }: GradeFormProps) {
   const isEditing = !!initialData
 
   const form = useForm<GradeFormValues>({
-    resolver: zodResolver(gradeSchema),
+    resolver: zodResolver(gradeSchema) as Resolver<GradeFormValues>,
     defaultValues: {
       name: initialData?.name || '',
       description: initialData?.description || '',

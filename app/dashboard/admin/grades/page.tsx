@@ -64,7 +64,7 @@ export default function GradesPage() {
     try {
       await remove(deleteId)
       toast.success('Grade deleted successfully')
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete grade')
     } finally {
       setDeleteLoading(false)

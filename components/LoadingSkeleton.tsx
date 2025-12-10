@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import { Card, CardHeader, CardContent } from '@/components/ui/card'
+import { Card, CardHeader } from '@/components/ui/card'
 
 interface LoadingSkeletonProps {
   variant?: 'card' | 'page' | 'card-grid'

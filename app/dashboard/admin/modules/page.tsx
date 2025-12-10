@@ -89,7 +89,7 @@ export default function ModulesPage() {
     try {
       await remove(deleteId)
       toast.success('Module deleted successfully')
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete module')
     } finally {
       setDeleteLoading(false)

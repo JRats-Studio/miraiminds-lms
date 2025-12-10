@@ -78,7 +78,7 @@ export default function SubjectsPage() {
     try {
       await remove(deleteId)
       toast.success('Subject deleted successfully')
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete subject')
     } finally {
       setDeleteLoading(false)

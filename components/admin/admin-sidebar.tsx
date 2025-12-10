@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   LogOut,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import type { User } from '@/lib/api/payload-api'
 import { logout } from '@/lib/api/payload-api'
 import {
@@ -57,8 +58,8 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       await logout()
       router.push('/login')
       router.refresh()
-    } catch (error) {
-      console.error('Logout failed:', error)
+    } catch {
+      toast.error('Failed to logout. Please try again.')
     }
   }
 
@@ -71,7 +72,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
           </div>
           <div className="flex flex-col">
             <span className="font-semibold" style={{ fontFamily: 'var(--font-nunito)' }}>
-              Mirai Minds
+              Mirai Minds LMS
             </span>
             <span className="text-xs text-muted-foreground">Admin Dashboard</span>
           </div>

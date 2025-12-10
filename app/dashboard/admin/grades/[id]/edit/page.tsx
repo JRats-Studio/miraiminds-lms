@@ -27,30 +27,35 @@ export default async function EditGradePage({ params }: Props) {
 
   const payload = await getPayload({ config })
 
+  let gradeData
   try {
-    const gradeData = await payload.findByID({ collection: 'grades', id })
-
-    const grade: Grade = {
-      id: String(gradeData.id),
-      name: gradeData.name,
-      description: gradeData.description || undefined,
-      displayOrder: gradeData.displayOrder,
-      createdAt: gradeData.createdAt,
-      updatedAt: gradeData.updatedAt,
-    }
-
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-nunito)' }}>
-            Edit Grade
-          </h1>
-          <p className="text-muted-foreground">Update grade information.</p>
-        </div>
-        <GradeForm initialData={grade} />
-      </div>
-    )
+    gradeData = await payload.findByID({ collection: 'grades', id })
   } catch {
     notFound()
   }
+
+  if (!gradeData) {
+    notFound()
+  }
+
+  const grade: Grade = {
+    id: String(gradeData.id),
+    name: gradeData.name,
+    description: gradeData.description || undefined,
+    displayOrder: gradeData.displayOrder,
+    createdAt: gradeData.createdAt,
+    updatedAt: gradeData.updatedAt,
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-nunito)' }}>
+          Edit Grade
+        </h1>
+        <p className="text-muted-foreground">Update grade information.</p>
+      </div>
+      <GradeForm initialData={grade} />
+    </div>
+  )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
@@ -41,7 +41,14 @@ const moduleSchema = z.object({
   displayOrder: z.coerce.number().int().min(0, 'Order must be a positive number'),
 })
 
-type ModuleFormValues = z.infer<typeof moduleSchema>
+type ModuleFormValues = {
+  name: string
+  subject: string
+  description?: string
+  videoUrl?: string
+  allowedUsers?: string[]
+  displayOrder: number
+}
 
 interface ModuleFormProps {
   initialData?: Module
@@ -79,36 +86,38 @@ export function ModuleForm({ initialData }: ModuleFormProps) {
   }
 
   const form = useForm<ModuleFormValues>({
-    resolver: zodResolver(moduleSchema),
+    resolver: zodResolver(moduleSchema) as Resolver<ModuleFormValues>,
     defaultValues: {
       name: initialData?.name || '',
       subject: getSubjectId(),
-      description: '',
+      description: typeof initialData?.description === 'string' ? initialData.description : '',
       videoUrl: initialData?.videoUrl || '',
       allowedUsers: getAllowedUserIds(),
       displayOrder: initialData?.displayOrder || 0,
     },
   })
 
+  // React Hook Form watch is fine here; suppress compiler warning.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const selectedUsers = form.watch('allowedUsers') || []
 
   const onSubmit = async (values: ModuleFormValues) => {
     try {
-      // Convert IDs to numbers for Payload relationships
+      // Convert subject ID to number for Payload relationship
       const data = {
-        ...values,
+        name: values.name,
         subject: parseInt(values.subject, 10),
         videoUrl: values.videoUrl || undefined,
-        allowedUsers: values.allowedUsers?.map((id) => parseInt(id, 10)),
+        allowedUsers: values.allowedUsers,
+        description: values.description || undefined,
+        displayOrder: values.displayOrder,
       }
 
-      console.log('Submitting module:', data)
-
       if (isEditing) {
-        await updateDocument<Module>('modules', initialData.id, data)
+        await updateDocument<Module>('modules', initialData.id, data as unknown as Partial<Module>)
         toast.success('Module updated successfully')
       } else {
-        await createDocument<Module>('modules', data)
+        await createDocument<Module>('modules', data as unknown as Partial<Module>)
         toast.success('Module created successfully')
       }
       router.push('/dashboard/admin/modules')

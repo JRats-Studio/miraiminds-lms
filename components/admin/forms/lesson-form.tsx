@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
@@ -37,7 +37,13 @@ const lessonSchema = z.object({
   displayOrder: z.coerce.number().int().min(0, 'Order must be a positive number'),
 })
 
-type LessonFormValues = z.infer<typeof lessonSchema>
+type LessonFormValues = {
+  title: string
+  module: string
+  content?: string
+  pdfUrl?: string
+  displayOrder: number
+}
 
 interface LessonFormProps {
   initialData?: Lesson
@@ -60,11 +66,11 @@ export function LessonForm({ initialData }: LessonFormProps) {
   }
 
   const form = useForm<LessonFormValues>({
-    resolver: zodResolver(lessonSchema),
+    resolver: zodResolver(lessonSchema) as Resolver<LessonFormValues>,
     defaultValues: {
       title: initialData?.title || '',
       module: getModuleId(),
-      content: '',
+      content: typeof initialData?.content === 'string' ? initialData.content : '',
       pdfUrl: initialData?.pdfUrl || '',
       displayOrder: initialData?.displayOrder || 0,
     },
@@ -74,18 +80,18 @@ export function LessonForm({ initialData }: LessonFormProps) {
     try {
       // Convert module ID to number for Payload relationship
       const data = {
-        ...values,
+        title: values.title,
         module: parseInt(values.module, 10),
+        content: values.content || undefined,
         pdfUrl: values.pdfUrl || undefined,
+        displayOrder: values.displayOrder,
       }
 
-      console.log('Submitting lesson:', data)
-
       if (isEditing) {
-        await updateDocument<Lesson>('lessons', initialData.id, data)
+        await updateDocument<Lesson>('lessons', initialData.id, data as unknown as Partial<Lesson>)
         toast.success('Lesson updated successfully')
       } else {
-        await createDocument<Lesson>('lessons', data)
+        await createDocument<Lesson>('lessons', data as unknown as Partial<Lesson>)
         toast.success('Lesson created successfully')
       }
       router.push('/dashboard/admin/lessons')

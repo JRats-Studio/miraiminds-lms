@@ -26,7 +26,7 @@ export default async function AdminDashboardLayout({
 
   // Redirect if not authenticated
   if (!authUser) {
-    redirect('/admin') // Redirect to Payload login
+    redirect('/login')
   }
 
   // Fetch full user data with role
@@ -37,7 +37,7 @@ export default async function AdminDashboardLayout({
 
   // Redirect if not an admin
   if (fullUser.role !== 'admin') {
-    redirect('/') // Non-admins go to homepage
+    redirect('/dashboard')
   }
 
   // Cast to our User type
@@ -54,7 +54,7 @@ export default async function AdminDashboardLayout({
     <SidebarProvider>
       <AdminSidebar user={user} />
       <SidebarInset>
-        <AdminHeader user={user} />
+        <AdminHeader />
         <main className="flex-1 overflow-auto p-6">{children}</main>
       </SidebarInset>
       <Toaster richColors position="top-right" />

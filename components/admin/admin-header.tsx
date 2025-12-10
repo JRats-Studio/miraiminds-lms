@@ -11,21 +11,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import type { User } from '@/lib/api/payload-api'
-
-interface AdminHeaderProps {
-  user: User
-}
-
-export function AdminHeader({ user }: AdminHeaderProps) {
+export function AdminHeader() {
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean)
 
-  // Build breadcrumb items from path segments
-  const breadcrumbs = segments.slice(1).map((segment, index) => {
+  // Build breadcrumb items from path segments (excluding 'dashboard')
+  const pathSegments = segments.slice(1)
+  const breadcrumbs = pathSegments.map((segment, index) => {
     const href = '/' + segments.slice(0, index + 2).join('/')
     const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ')
-    const isLast = index === segments.length - 2
+    const isLast = index === pathSegments.length - 1
     return { href, label, isLast }
   })
 

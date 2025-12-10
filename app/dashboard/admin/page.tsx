@@ -53,7 +53,7 @@ export default async function AdminDashboardPage() {
         <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-nunito)' }}>
           Dashboard Overview
         </h1>
-        <p className="text-muted-foreground">Welcome to the Mirai Minds admin dashboard.</p>
+        <p className="text-muted-foreground">Welcome to the Mirai Minds LMS admin dashboard.</p>
       </div>
 
       {/* Stats Grid */}

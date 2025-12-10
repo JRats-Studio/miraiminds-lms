@@ -14,11 +14,11 @@ export default function Footer() {
                 <span className="text-primary-foreground font-bold text-sm" style={{ fontFamily: 'var(--font-header)' }}>M</span>
               </div>
               <span className="text-lg font-bold text-primary" style={{ fontFamily: 'var(--font-header)' }}>
-                Mirai Minds
+                Mirai Minds LMS
               </span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              &copy; {currentYear} Mirai Minds. All rights reserved.
+              &copy; {currentYear} Mirai Minds LMS. All rights reserved.
             </p>
           </div>
 

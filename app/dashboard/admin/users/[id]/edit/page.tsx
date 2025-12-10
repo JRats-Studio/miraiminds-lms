@@ -28,30 +28,35 @@ export default async function EditUserPage({ params }: Props) {
 
   const payload = await getPayload({ config })
 
+  let userData
   try {
-    const userData = await payload.findByID({ collection: 'users', id })
-
-    const user: User = {
-      id: String(userData.id),
-      email: userData.email,
-      name: userData.name,
-      role: userData.role as 'admin' | 'student',
-      createdAt: userData.createdAt,
-      updatedAt: userData.updatedAt,
-    }
-
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-nunito)' }}>
-            Edit User
-          </h1>
-          <p className="text-muted-foreground">Update user information.</p>
-        </div>
-        <UserForm initialData={user} />
-      </div>
-    )
+    userData = await payload.findByID({ collection: 'users', id })
   } catch {
     notFound()
   }
+
+  if (!userData) {
+    notFound()
+  }
+
+  const user: User = {
+    id: String(userData.id),
+    email: userData.email,
+    name: userData.name,
+    role: userData.role as 'admin' | 'student',
+    createdAt: userData.createdAt,
+    updatedAt: userData.updatedAt,
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-nunito)' }}>
+          Edit User
+        </h1>
+        <p className="text-muted-foreground">Update user information.</p>
+      </div>
+      <UserForm initialData={user} />
+    </div>
+  )
 }

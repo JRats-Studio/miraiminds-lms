@@ -35,9 +35,9 @@ export default function LessonsPage() {
         accessorKey: 'module',
         header: 'Module',
         cell: ({ row }) => {
-          const module = row.original.module as Module
-          return module?.name ? (
-            <Badge variant="secondary">{module.name}</Badge>
+          const lessonModule = row.original.module as Module
+          return lessonModule?.name ? (
+            <Badge variant="secondary">{lessonModule.name}</Badge>
           ) : (
             <span className="text-muted-foreground">-</span>
           )
@@ -76,7 +76,7 @@ export default function LessonsPage() {
     try {
       await remove(deleteId)
       toast.success('Lesson deleted successfully')
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete lesson')
     } finally {
       setDeleteLoading(false)

@@ -72,7 +72,7 @@ export default function UsersPage() {
     try {
       await remove(deleteId)
       toast.success('User deleted successfully')
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete user')
     } finally {
       setDeleteLoading(false)

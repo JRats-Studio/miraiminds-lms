@@ -33,7 +33,9 @@ const lessonSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   module: z.string().min(1, 'Module is required'),
   content: z.string().optional(),
-  pdfUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  coverImageUrl: z.string().url('Must be a valid URL').min(1, 'Cover image URL is required'),
+  contentPdfUrl: z.string().url('Must be a valid URL').min(1, 'Content PDF URL is required'),
+  activityPdfUrl: z.string().url('Must be a valid URL').min(1, 'Activity PDF URL is required'),
   displayOrder: z.coerce.number().int().min(0, 'Order must be a positive number'),
 })
 
@@ -41,7 +43,9 @@ type LessonFormValues = {
   title: string
   module: string
   content?: string
-  pdfUrl?: string
+  coverImageUrl: string
+  contentPdfUrl: string
+  activityPdfUrl: string
   displayOrder: number
 }
 
@@ -71,7 +75,9 @@ export function LessonForm({ initialData }: LessonFormProps) {
       title: initialData?.title || '',
       module: getModuleId(),
       content: typeof initialData?.content === 'string' ? initialData.content : '',
-      pdfUrl: initialData?.pdfUrl || '',
+      coverImageUrl: initialData?.coverImageUrl || '',
+      contentPdfUrl: initialData?.contentPdfUrl || '',
+      activityPdfUrl: initialData?.activityPdfUrl || '',
       displayOrder: initialData?.displayOrder || 0,
     },
   })
@@ -83,7 +89,9 @@ export function LessonForm({ initialData }: LessonFormProps) {
         title: values.title,
         module: parseInt(values.module, 10),
         content: values.content || undefined,
-        pdfUrl: values.pdfUrl || undefined,
+        coverImageUrl: values.coverImageUrl,
+        contentPdfUrl: values.contentPdfUrl,
+        activityPdfUrl: values.activityPdfUrl,
         displayOrder: values.displayOrder,
       }
 
@@ -177,23 +185,63 @@ export function LessonForm({ initialData }: LessonFormProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="pdfUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>PDF URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://drive.google.com/file/d/..."
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>Google Drive link to the PDF worksheet.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
+              <h3 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Media URLs</h3>
+
+              <FormField
+                control={form.control}
+                name="coverImageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cover Image URL *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="https://drive.google.com/file/d/..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>Google Drive link to the cover image (JPG/PNG).</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="contentPdfUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Content PDF URL *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="https://drive.google.com/file/d/..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>Google Drive link to the main lesson content PDF.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="activityPdfUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Activity PDF URL *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="https://drive.google.com/file/d/..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>Google Drive link to the student activity PDF.</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}

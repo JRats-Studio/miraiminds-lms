@@ -53,7 +53,9 @@ export default async function EditLessonPage({ params }: Props) {
         } as Module)
       : String(lessonData.module),
     content: lessonData.content,
-    pdfUrl: lessonData.pdfUrl || undefined,
+    coverImageUrl: lessonData.coverImageUrl || '',
+    contentPdfUrl: lessonData.contentPdfUrl || '',
+    activityPdfUrl: lessonData.activityPdfUrl || '',
     displayOrder: lessonData.displayOrder,
     createdAt: lessonData.createdAt,
     updatedAt: lessonData.updatedAt,

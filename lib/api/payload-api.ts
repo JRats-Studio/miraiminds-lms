@@ -49,7 +49,9 @@ export interface Lesson {
   title: string
   module: string | Module
   content?: unknown // Rich text content
-  pdfUrl?: string
+  coverImageUrl: string
+  contentPdfUrl: string
+  activityPdfUrl: string
   displayOrder: number
   createdAt: string
   updatedAt: string

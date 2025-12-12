@@ -44,11 +44,26 @@ export default function LessonsPage() {
         },
       },
       {
-        accessorKey: 'pdfUrl',
-        header: 'PDF',
-        cell: ({ row }) => (
-          <span className="text-muted-foreground">{row.original.pdfUrl ? 'Yes' : 'No'}</span>
-        ),
+        id: 'media',
+        header: 'Media',
+        cell: ({ row }) => {
+          const hasCover = !!row.original.coverImageUrl
+          const hasContent = !!row.original.contentPdfUrl
+          const hasActivity = !!row.original.activityPdfUrl
+          return (
+            <div className="flex gap-1">
+              <Badge variant={hasCover ? 'default' : 'outline'} className="text-xs">
+                Cover
+              </Badge>
+              <Badge variant={hasContent ? 'default' : 'outline'} className="text-xs">
+                Content
+              </Badge>
+              <Badge variant={hasActivity ? 'default' : 'outline'} className="text-xs">
+                Activity
+              </Badge>
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'displayOrder',

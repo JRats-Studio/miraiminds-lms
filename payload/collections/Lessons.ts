@@ -66,11 +66,30 @@ const Lessons: CollectionConfig = {
       },
     },
     {
-      name: 'pdfUrl',
+      name: 'coverImageUrl',
       type: 'text',
+      required: true,
       admin: {
-        description: 'Google Drive link to the PDF (paste full URL)',
-        placeholder: 'https://drive.google.com/file/d/2def...uvw/view',
+        description: 'Google Drive link to the cover image (JPG)',
+        placeholder: 'https://drive.google.com/file/d/xxx/view',
+      },
+    },
+    {
+      name: 'contentPdfUrl',
+      type: 'text',
+      required: true,
+      admin: {
+        description: 'Google Drive link to the main lesson content PDF',
+        placeholder: 'https://drive.google.com/file/d/xxx/view',
+      },
+    },
+    {
+      name: 'activityPdfUrl',
+      type: 'text',
+      required: true,
+      admin: {
+        description: 'Google Drive link to the student activity PDF',
+        placeholder: 'https://drive.google.com/file/d/xxx/view',
       },
     },
     {

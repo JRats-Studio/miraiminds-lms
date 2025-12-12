@@ -1,11 +1,13 @@
 import { cookies } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
+import { BookOpen, PenLine, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { Lesson, Module, Subject, Grade } from '@/lib/api/payload-api'
 import Breadcrumbs from '@/components/Breadcrumbs'
+import DriveImageViewer from '@/components/DriveImageViewer'
 import DrivePDFViewer from '@/components/DrivePDFViewer'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
@@ -52,9 +54,9 @@ async function fetchLessonsForModule(moduleId: string) {
 }
 
 function toPlainText(content: unknown) {
-  if (!content) return 'Content coming soon.'
+  if (!content) return null
   if (typeof content === 'string') return content
-  return 'Rich text content is not yet rendered.'
+  return null
 }
 
 function findPrevNext(lessons: Lesson[], currentId: string) {
@@ -75,9 +77,11 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
   const lessonsData = await fetchLessonsForModule(moduleRecord.id)
   const lessons = lessonsData.docs || []
   const { prev, next } = findPrevNext(lessons, lesson.id)
+  const contentText = toPlainText(lesson.content)
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 space-y-8">
+    <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
+      {/* Breadcrumbs */}
       <Breadcrumbs
         items={[
           grade && typeof grade !== 'string'
@@ -91,53 +95,114 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
         ]}
       />
 
-      <header className="space-y-2">
-        <p className="text-sm uppercase tracking-wide text-muted-foreground">Lesson</p>
-        <h1 className="text-3xl font-bold">{lesson.title}</h1>
-      </header>
+      {/* Cover Image */}
+      <DriveImageViewer
+        url={lesson.coverImageUrl}
+        alt={`Cover image for ${lesson.title}`}
+        className="shadow-xl"
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Content</CardTitle>
-          <CardDescription>Lesson details</CardDescription>
+      {/* Lesson Header Card */}
+      <Card className="border-none shadow-md bg-gradient-to-br from-card to-muted/30">
+        <CardHeader className="pb-4">
+          <p className="text-sm font-medium text-primary uppercase tracking-wider mb-1">
+            Lesson
+          </p>
+          <CardTitle
+            className="text-3xl font-bold"
+            style={{ fontFamily: 'var(--font-header)' }}
+          >
+            {lesson.title}
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="leading-relaxed text-muted-foreground">{toPlainText(lesson.content)}</p>
+        {contentText && (
+          <CardContent>
+            <p
+              className="text-muted-foreground leading-relaxed"
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              {contentText}
+            </p>
+          </CardContent>
+        )}
+      </Card>
 
-          {lesson.pdfUrl && (
-            <DrivePDFViewer url={lesson.pdfUrl} title={lesson.title} />
-          )}
+      {/* Content PDF Section */}
+      <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+        <CardHeader className="bg-primary/5 border-b">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <BookOpen className="h-5 w-5 text-primary" />
+            </div>
+            <CardTitle
+              className="text-xl"
+              style={{ fontFamily: 'var(--font-header)' }}
+            >
+              Lesson Content
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-6">
+          <DrivePDFViewer url={lesson.contentPdfUrl} />
         </CardContent>
       </Card>
 
-      <Separator />
+      {/* Activity PDF Section */}
+      <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+        <CardHeader className="bg-accent/5 border-b">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-accent/10">
+              <PenLine className="h-5 w-5 text-accent" />
+            </div>
+            <CardTitle
+              className="text-xl"
+              style={{ fontFamily: 'var(--font-header)' }}
+            >
+              Student Activity
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-6">
+          <DrivePDFViewer url={lesson.activityPdfUrl} />
+        </CardContent>
+      </Card>
 
-      <div className="flex flex-wrap gap-4 justify-between">
-        <div className="space-y-2">
-          <p className="text-xs uppercase text-muted-foreground">Navigation</p>
-          <div className="flex gap-4">
+      {/* Navigation */}
+      <Card className="border-none shadow-sm bg-muted/30">
+        <CardContent className="py-4">
+          <div className="flex items-center justify-between">
             {prev ? (
-              <Link href={`/lessons/${prev.id}`} className="text-primary hover:underline">
-                ← {prev.title}
-              </Link>
+              <Button asChild variant="ghost" className="gap-2">
+                <Link href={`/lessons/${prev.id}`}>
+                  <ChevronLeft className="h-4 w-4" />
+                  <span className="hidden sm:inline">{prev.title}</span>
+                  <span className="sm:hidden">Previous</span>
+                </Link>
+              </Button>
             ) : (
-              <span className="text-muted-foreground">No previous lesson</span>
+              <div />
             )}
-            {next ? (
-              <Link href={`/lessons/${next.id}`} className="text-primary hover:underline">
-                {next.title} →
+
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/modules/${moduleRecord.id}`}>
+                Back to Module
               </Link>
+            </Button>
+
+            {next ? (
+              <Button asChild variant="ghost" className="gap-2">
+                <Link href={`/lessons/${next.id}`}>
+                  <span className="hidden sm:inline">{next.title}</span>
+                  <span className="sm:hidden">Next</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
             ) : (
-              <span className="text-muted-foreground">No next lesson</span>
+              <div />
             )}
           </div>
-        </div>
-
-        <Link href={`/modules/${moduleRecord.id}`} className="text-primary hover:underline">
-          Back to module
-        </Link>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
-

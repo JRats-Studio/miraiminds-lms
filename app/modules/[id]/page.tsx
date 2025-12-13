@@ -34,7 +34,7 @@ async function fetchLessons(moduleId: string) {
   params.set(
     'where',
     JSON.stringify({
-      module: { equals: moduleId },
+      module: { equals: parseInt(moduleId, 10) },
     })
   )
 

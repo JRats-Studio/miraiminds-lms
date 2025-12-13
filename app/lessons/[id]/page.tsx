@@ -33,12 +33,7 @@ async function fetchLesson(id: string) {
 async function fetchLessonsForModule(moduleId: string) {
   const params = new URLSearchParams()
   params.set('sort', 'displayOrder')
-  params.set(
-    'where',
-    JSON.stringify({
-      module: { equals: parseInt(moduleId, 10) },
-    })
-  )
+  params.set('where[module][equals]', moduleId)
 
   const cookieStore = await cookies()
   const res = await fetch(`${serverUrl}/api/lessons?${params.toString()}`, {

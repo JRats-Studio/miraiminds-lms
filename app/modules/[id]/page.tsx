@@ -4,7 +4,7 @@ import Link from 'next/link'
 import type { Grade, Lesson, Module, Subject } from '@/lib/api/payload-api'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import DriveVideoPlayer from '@/components/DriveVideoPlayer'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
@@ -31,12 +31,7 @@ async function fetchModule(id: string) {
 async function fetchLessons(moduleId: string) {
   const params = new URLSearchParams()
   params.set('sort', 'displayOrder')
-  params.set(
-    'where',
-    JSON.stringify({
-      module: { equals: parseInt(moduleId, 10) },
-    })
-  )
+  params.set('where[module][equals]', moduleId)
 
   const cookieStore = await cookies()
   const res = await fetch(`${serverUrl}/api/lessons?${params.toString()}`, {
@@ -107,15 +102,15 @@ export default async function ModulePage({ params }: { params: Promise<{ id: str
           </div>
         ) : (
           <div className="space-y-3">
-            {lessons.map((lesson) => (
+            {lessons.map((lesson, index) => (
               <Card key={lesson.id} className="hover:border-secondary transition-all">
                 <CardHeader>
+                  <p className="text-sm font-medium text-primary">Lesson {index + 1}</p>
                   <CardTitle className="text-lg">
                     <Link href={`/lessons/${lesson.id}`} className="hover:underline">
                       {lesson.title}
                     </Link>
                   </CardTitle>
-                  <CardDescription>Order {lesson.displayOrder}</CardDescription>
                 </CardHeader>
               </Card>
             ))}
